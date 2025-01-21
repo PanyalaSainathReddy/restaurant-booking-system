@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
@@ -36,8 +36,16 @@ const TableSelection = () => {
   const [selectedTable, setSelectedTable] = useState<Table | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const guests = Number(searchParams.get("guests"));
+  const guests = Number(searchParams.get("guests")) || 0;
   const date = searchParams.get("date") || "";
+
+  // Add validation
+  useEffect(() => {
+    if (!guests || !date) {
+      toast.error("Invalid booking parameters");
+      navigate(-1);
+    }
+  }, [guests, date, navigate]);
 
   // Query for time slot details
   const { data: timeSlot } = useQuery<TimeSlot>({
@@ -69,6 +77,7 @@ const TableSelection = () => {
         table_id: tableId,
         number_of_guests: guests,
         date: date,
+        restaurant_id: restaurantId,
       };
 
       const response = await api.post(

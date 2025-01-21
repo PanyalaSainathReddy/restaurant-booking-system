@@ -85,7 +85,9 @@ const RestaurantDetails = () => {
       navigate("/login", { state: { from: `/restaurants/${restaurantId}` } });
       return;
     }
-    navigate(`/book/${restaurantId}/slot/${slotId}`);
+    navigate(
+      `/book/${restaurantId}/slot/${slotId}?guests=${guestCount}&date=${selectedDate}`
+    );
   };
 
   if (restaurantLoading) {
